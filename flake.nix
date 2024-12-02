@@ -13,14 +13,14 @@
         pkgs = import nixpkgs { system = "aarch64-darwin"; };
       in
       pkgs.buildDotnetModule {
-        pname = "aoc-2023";
+        pname = "aoc-2024";
         version = "0.0.1";
         dotnet-sdk = pkgs.dotnetCorePackages.sdk_9_0;
         dotnet-runtime = pkgs.dotnetCorePackages.runtime_9_0;
         src = ./.;
         nugetDeps = nuget-packageslock2nix.lib {
           system = "aarch64-darwin";
-          name = "aoc-2023";
+          name = "aoc-2024";
           lockfiles = [
             ./packages.lock.json
           ];
@@ -34,8 +34,8 @@
       in
       pkgs.mkShell {
         buildInputs = with pkgs; [
-          #dotnetCorePackages.sdk_8_0
           dotnetCorePackages.sdk_9_0
+          fantomas
         ];
       };
   };
