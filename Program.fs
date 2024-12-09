@@ -1,1 +1,1 @@
-﻿printfn "%A" (s_2.solveSecond ())
+﻿printfn "%A" (s_3.solveSecond ())
