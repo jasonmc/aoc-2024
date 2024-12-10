@@ -1,35 +1,34 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { nixpkgs, ... }: {
-    packages.aarch64-darwin.default =
-      let
-        pkgs = import nixpkgs { system = "aarch64-darwin"; };
-      in
-      pkgs.buildDotnetModule {
-        pname = "aoc-2024";
-        version = "0.0.1";
-        dotnet-sdk = pkgs.dotnetCorePackages.sdk_9_0;
-        dotnet-runtime = pkgs.dotnetCorePackages.runtime_9_0;
-        src = ./.;
-        nugetDeps = ./deps.nix;
-      };
+  outputs = { self, nixpkgs, flake-utils }:
 
-      formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixpkgs-fmt;
+    flake-utils.lib.eachDefaultSystem (system:
+      let pkgs = import nixpkgs { inherit system; };
+      in {
+        packages.default = pkgs.buildDotnetModule {
+          pname = "aoc-2024";
+          version = "0.0.1";
+          dotnet-sdk = pkgs.dotnetCorePackages.sdk_9_0;
+          dotnet-runtime = pkgs.dotnetCorePackages.runtime_9_0;
+          src = ./.;
+          nugetDeps = ./deps.nix;
+        };
 
-      devShells.aarch64-darwin.default = let
-        pkgs = import nixpkgs { system = "aarch64-darwin"; };
-      in
-      pkgs.mkShell {
-        buildInputs = with pkgs; [
-          dotnetCorePackages.sdk_9_0
-          fantomas
-          nuget-to-nix
-          age
-          git-agecrypt
-        ];
-      };
-  };
+        formatter = pkgs.nixpkgs-fmt;
+
+        devShells.default = pkgs.mkShell {
+          buildInputs = with pkgs; [
+            dotnetCorePackages.sdk_9_0
+            fantomas
+            nuget-to-nix
+            age
+            git-agecrypt
+          ];
+        };
+
+      });
 }
