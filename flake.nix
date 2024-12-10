@@ -27,6 +27,8 @@
           dotnetCorePackages.sdk_9_0
           fantomas
           nuget-to-nix
+          age
+          git-agecrypt
         ];
       };
   };
